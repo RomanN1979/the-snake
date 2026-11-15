@@ -1,4 +1,5 @@
 from random import randint
+
 import pygame
 
 
@@ -48,8 +49,10 @@ class GameObject():
         self.body_color = color
 
     def draw(self):
-        """Метод отрисовки базового класса,
-        переопределяется в дочерних классах."""
+        """
+        Метод отрисовки базового класса,
+        переопределяется в дочерних классах.
+        """
         pass
 
 
@@ -83,7 +86,7 @@ class Apple(GameObject):
                 break
 
     def draw(self):
-        """ Оотрисовывает яблоко на игровом поле."""
+        """Отрисовывает яблоко на игровом поле."""
         rect = (pygame.Rect(self.position, (GRID_SIZE, GRID_SIZE)))
         pygame.draw.rect(screen, self.body_color, rect)
         pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
@@ -115,8 +118,10 @@ class Snake(GameObject):
             self.next_direction = None
 
     def move(self):
-        """Расчет следующей координаты при движении
-        змейки с учетом направления."""
+        """
+        Расчет следующей координаты при движении
+        змейки с учетом направления.
+        """
         head_pos = self.get_head_position()
     # Новая позиция головы: шаг на одну клетку в текущем направлении
         self.update_direction()
