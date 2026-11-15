@@ -43,6 +43,7 @@ clock = pygame.time.Clock()
 # Тут опишите все классы игры.
 class GameObject():
     """ Базовый класс."""
+
     def __init__(self, color=BORDER_COLOR):
         self.position = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         self.body_color = color
@@ -57,6 +58,7 @@ class Apple(GameObject):
     Args:
        color (tuple): цвет объекта, по умолчанию APPLE_COLOR.
     """
+
     def __init__(self, color=APPLE_COLOR):
         super().__init__(color)
         self.randomize_position()
@@ -90,6 +92,7 @@ class Snake(GameObject):
     Args:
        color (tuple): цвет объекта, по умолчанию SNAKE_COLOR.
     """
+
     def __init__(self, color=SNAKE_COLOR):
         super().__init__(color)
         self.length = 1  # Длинна змейки.
@@ -170,7 +173,7 @@ def handle_keys(game_object):
 
 
 def main():
-    # Инициализация PyGame:
+    """ Главнвя функция."""
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     # Создаем экземпляры классов.
