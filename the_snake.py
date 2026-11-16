@@ -36,6 +36,7 @@ SPEED = 5
 SCREEN_CENTER = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
 
 # Настройка игрового окна:
+pg.init()
 screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
 
 # Заголовок окна игрового поля:
@@ -48,7 +49,7 @@ clock = pg.time.Clock()
 class GameObject:
     """Базовый класс."""
 
-    def __init__(self, color=BORDER_COLOR):
+    def __init__(self, color=BORDER_COLOR) -> None:
         self.position = SCREEN_CENTER
         self.body_color = color
 
@@ -57,7 +58,7 @@ class GameObject:
         position: tuple[int, int] | None = None,
         body_color: tuple[int, int, int] | None = None,
         border_color: tuple[int, int, int] | None = None,
-    ):
+    ) -> None:
         """
         Метод отрисовки базового класса,
         рисует прямоугольник в заданной позиции с заданным цветом тела
@@ -86,13 +87,14 @@ class Apple(GameObject):
         self,
         occupied_positions: list[tuple[int, int]] | None = None,
         color: tuple[int, int, int] = APPLE_COLOR,
-    ):
+    ) -> None:
 
         super().__init__(color)
         self.randomize_position(occupied_positions)
 
     def randomize_position(self,
-                           occupied_positions: list[tuple] | None = None):
+                           occupied_positions: list[tuple] | None = None
+                           ) -> None:
         """
         Генерирует случайное расположение яблока на игровом поле
         с исключением недопустимых значений.
@@ -122,12 +124,12 @@ class Snake(GameObject):
        color (tuple[int, int, int]): цвет объекта, по умолчанию SNAKE_COLOR.
     """
 
-    def __init__(self, color: tuple[int, int, int] = SNAKE_COLOR):
+    def __init__(self, color: tuple[int, int, int] = SNAKE_COLOR) -> None:
         super().__init__(color)
         self.positions: list = []
         self.reset()
 
-    def reset(self):
+    def reset(self) -> None:
         """Возврат змейки в начальное состояние."""
         self.length = 1  # Длинна змейки.
         self.positions.clear()
@@ -136,7 +138,7 @@ class Snake(GameObject):
         self.next_direction = None  # Следующее направление.
         self.last = None  # Координаты последнего сегмента перед его удалением.
 
-    def get_head_position(self):
+    def get_head_position(self) -> tuple[int, int]:
         """Возвращает текущую координату головы змейки."""
         return self.positions[0]
 
@@ -146,7 +148,7 @@ class Snake(GameObject):
             self.direction = self.next_direction
             self.next_direction = None
 
-    def move(self):
+    def move(self) -> None:
         """
         Расчет следующей координаты при движении
         змейки с учетом направления.
@@ -163,6 +165,8 @@ class Snake(GameObject):
         # Если змейка длиннее нужного — убираем хвост и запоминаем его
         if len(self.positions) > self.length:
             self.last = self.positions.pop()
+        else:
+            self.last = None
 
     def draw(self):
         """Отрисовка змейки на игровом поле."""
@@ -178,7 +182,7 @@ class Snake(GameObject):
                          BOARD_BACKGROUND_COLOR)
 
 
-def handle_keys(game_object):
+def handle_keys(game_object) -> None:
     """Обработка действий пользователя."""
     for event in pg.event.get():
         if event.type == pg.QUIT or (
@@ -199,8 +203,8 @@ def handle_keys(game_object):
 
 def main():
     """Главнвя функция."""
-    pg.init()
-    screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen.fill(BOARD_BACKGROUND_COLOR)  # Первичная заливка
+
     # Создаем экземпляры классов.
     snake = Snake()
     apple = Apple(snake.positions)
