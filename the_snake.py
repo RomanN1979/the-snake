@@ -53,16 +53,21 @@ class GameObject:
         self.position = SCREEN_CENTER
         self.body_color = color
 
-    def draw(
-        self,
-        position: tuple[int, int] | None = None,
-        body_color: tuple[int, int, int] | None = None,
-        border_color: tuple[int, int, int] | None = None,
-    ) -> None:
+    def draw(self) -> None:
         """
         Метод отрисовки базового класса,
-        рисует прямоугольник в заданной позиции с заданным цветом тела
-        и цветом бордюра.
+        переопределяется в дочерних классах.
+        """
+
+    def draw_single_rect(
+            self,
+            position: tuple[int, int] | None = None,
+            body_color: tuple[int, int, int] | None = None,
+            border_color: tuple[int, int, int] | None = None,
+    ) -> None:
+        """
+        Рисует прямоугольник размером стороны GRID_SIZE
+        в заданной позиции с заданным цветом тела и цветом бордюра.
         Args:
             position (tuple(int, int)): левый верхний угол;
                 по умолчанию self.position.
@@ -114,7 +119,7 @@ class Apple(GameObject):
 
     def draw(self):
         """Отрисовывает яблоко на игровом поле."""
-        super().draw()
+        self.draw_single_rect()
 
 
 class Snake(GameObject):
@@ -126,17 +131,16 @@ class Snake(GameObject):
 
     def __init__(self, color: tuple[int, int, int] = SNAKE_COLOR) -> None:
         super().__init__(color)
-        self.positions: list = []
         self.reset()
 
     def reset(self) -> None:
         """Возврат змейки в начальное состояние."""
         self.length = 1  # Длинна змейки.
-        self.positions.clear()
-        self.positions.append(self.position)  # Список сегментов.
+        self.positions = [SCREEN_CENTER]
         self.direction = RIGHT  # Tекущее направление движения.
         self.next_direction = None  # Следующее направление.
-        self.last = None  # Координаты последнего сегмента перед его удалением.
+        # Координаты последнего сегмента перед его удалением.
+        self.last: tuple[int, int] | None = None
 
     def get_head_position(self) -> tuple[int, int]:
         """Возвращает текущую координату головы змейки."""
@@ -172,14 +176,14 @@ class Snake(GameObject):
         """Отрисовка змейки на игровом поле."""
         # Отрисовка всего тела кроме головы
         for position in self.positions[1:]:
-            super().draw(position)
+            self.draw_single_rect(position)
         # Отрисовка головы змейки
-        super().draw(self.get_head_position(), HEAD_COLOR)
+        self.draw_single_rect(self.get_head_position(), HEAD_COLOR)
         # Затирание старой позиции хвоста, если змейка сдвинулась.
         if self.last is not None:
-            super().draw(self.last,
-                         BOARD_BACKGROUND_COLOR,
-                         BOARD_BACKGROUND_COLOR)
+            self.draw_single_rect(self.last,
+                                  BOARD_BACKGROUND_COLOR,
+                                  BOARD_BACKGROUND_COLOR)
 
 
 def handle_keys(game_object) -> None:
@@ -208,8 +212,8 @@ def main():
     # Создаем экземпляры классов.
     snake = Snake()
     apple = Apple(snake.positions)
-
     apple.draw()
+
     while True:
         handle_keys(snake)
         snake.move()
